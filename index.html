@@ -1,0 +1,26 @@
+<!doctype html>
+<html> 
+ <head>
+  <title>Online HTML Editor</title> 
+ </head> 
+ <body> 
+   <video id = "my-video" controls></video>
+  <h1>LIVE VIDEO</h1> 
+  <button onclick="get()">allow camera </button> 
+ 
+ 
+ <script>
+ function get()
+ {
+  navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+    .then(function(stream) {
+      var videoElement = document.getElementById('my-video');
+      videoElement.srcObject = stream;
+      videoElement.play();
+    });
+} 
+
+</script> 
+
+ </body>
+</html>

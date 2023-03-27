@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Scanner</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+</head>
+<body>
+  <video id="video" width="320" height="240"></video>
+  <canvas id="canvas" width="320" height="240"></canvas>
+  <div id="result"></div>
+
+  <script>
+    var video = document.getElementById("video");
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+      .then(function(stream) {
+        video.srcObject = stream;
+        video.setAttribute("playsinline", true);
+        video.play();
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+
+    video.addEventListener("play", function() {
+      var intervalId = setInterval(function() {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        var code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: "dontInvert",
+        });
+        if (code) {
+          clearInterval(intervalId);
+          document.getElementById("result").innerHTML = code.data;
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
